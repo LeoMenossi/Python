@@ -1,5 +1,4 @@
 .env
 /queries
-.vscode
 start_api.bat
 __pycache__
