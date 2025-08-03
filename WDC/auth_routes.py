@@ -9,7 +9,7 @@ auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 @auth_router.post("/token")
 async def auth(usuario_schema: UsuarioSchema):
-    usuario = autentica_usuario(usuario_schema.usuario, usuario_schema.senha)
+    usuario = autentica_usuario(usuario_schema.user, usuario_schema.password)
 
     if not usuario:
         raise HTTPException(status_code=401, detail="Credenciais inválidas")
@@ -30,12 +30,12 @@ async def login(usuario_schema: OAuth2PasswordRequestForm = Depends()):
 @auth_router.post("/create")
 async def create_account(usuario_schema: UsuarioSchema, valid_token = Depends(valida_token)):
     if valid_token:
-        count = existe_usuario(usuario_schema.usuario)
+        count = existe_usuario(usuario_schema.user)
         if count > 0:
             raise HTTPException(status_code=400, detail="Usuário já cadastrado")
         else:
-            senha_criptografada = pwd_context.hash(usuario_schema.senha)
-            cria_usuario(usuario_schema.usuario, senha_criptografada)
+            senha_criptografada = pwd_context.hash(usuario_schema.password)
+            cria_usuario(usuario_schema.user, senha_criptografada)
             return {"mensagem": "Usuário inserido com sucesso"}
     else:
         raise HTTPException(status_code=400, detail="Acesso Inválido")
