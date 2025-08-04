@@ -58,10 +58,10 @@ async def consult_query(table: str, valid_token = Depends(valida_token)):
 @query_router.get("/execute/where/{table}")
 async def consult_query(table: str, where_schema: WhereSchema, valid_token = Depends(valida_token)):
     """
-    Endpoint responsável pela consulta da query
+    Endpoint responsável pela consulta da query com parâmetros via body
     """
     if valid_token:
-        query = Query.get_query(table.upper(), where_schema.where)
+        query = Query.get_query(table.upper(), where_schema.where, where_schema.group, where_schema.order)
         resultado = Query.executa_query(query)
         return {"result": resultado}
     else:

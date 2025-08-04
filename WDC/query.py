@@ -17,7 +17,7 @@ def lista_queries():
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail='Diretório das queries não encontrado')
 
-def get_query(alias: str, where: Optional[list] = None):
+def get_query(alias: str, where: Optional[list] = None, group: Optional[str] = None, order: Optional[str] = None):
     try:
         with open(f"queries/{alias}.txt", "r") as arquivo:
             query = arquivo.read()
@@ -28,6 +28,12 @@ def get_query(alias: str, where: Optional[list] = None):
                         query += " AND " + linha + " "
                     else:
                         query += " WHERE " + linha + " "
+            if group:
+                query += f"GROUP BY {group} "
+
+            if order:
+                query += f"ORDER BY {order} "
+        print(query)
         return query
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Arquivo de query não encontrado")

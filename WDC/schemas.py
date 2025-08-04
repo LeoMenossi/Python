@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class UsuarioSchema(BaseModel):
     user: str
@@ -17,6 +18,8 @@ class QuerySchema(BaseModel):
 
 class WhereSchema(BaseModel):
     where: list
-    
+    group: Optional[str] = None
+    order: Optional[str] = None
+
     class Config:
         from_attributes = True
