@@ -1,5 +1,6 @@
 from main import connection_db
 from fastapi import HTTPException
+from typing import Optional
 import os
 import pyodbc
 
@@ -16,11 +17,17 @@ def lista_queries():
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail='Diretório das queries não encontrado')
 
-def get_query(alias: str):
+def get_query(alias: str, where: Optional[list] = None):
     try:
         with open(f"queries/{alias}.txt", "r") as arquivo:
             query = arquivo.read()
 
+            if where:
+                for linha in where:
+                    if "WHERE" in query:
+                        query += " AND " + linha + " "
+                    else:
+                        query += " WHERE " + linha + " "
         return query
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Arquivo de query não encontrado")

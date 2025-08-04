@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 import query as Query
 from dependencies import valida_token
-from schemas import QuerySchema
+from schemas import QuerySchema, WhereSchema
 
 query_router = APIRouter(prefix="/query", tags=["query"])
 
@@ -50,6 +50,18 @@ async def consult_query(table: str, valid_token = Depends(valida_token)):
     """
     if valid_token:
         query = Query.get_query(table.upper())
+        resultado = Query.executa_query(query)
+        return {"result": resultado}
+    else:
+        raise HTTPException(status_code=400, detail="Acesso Inválido")
+
+@query_router.get("/execute/where/{table}")
+async def consult_query(table: str, where_schema: WhereSchema, valid_token = Depends(valida_token)):
+    """
+    Endpoint responsável pela consulta da query
+    """
+    if valid_token:
+        query = Query.get_query(table.upper(), where_schema.where)
         resultado = Query.executa_query(query)
         return {"result": resultado}
     else:

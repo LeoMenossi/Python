@@ -14,3 +14,9 @@ class QuerySchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+class WhereSchema(BaseModel):
+    where: list
+    
+    class Config:
+        from_attributes = True
