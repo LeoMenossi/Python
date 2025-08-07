@@ -33,7 +33,6 @@ def get_query(alias: str, where: Optional[list] = None, group: Optional[str] = N
 
             if order:
                 query += f"ORDER BY {order} "
-        print(query)
         return query
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Arquivo de query não encontrado")

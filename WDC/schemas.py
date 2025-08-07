@@ -20,6 +20,8 @@ class WhereSchema(BaseModel):
     where: list
     group: Optional[str] = None
     order: Optional[str] = None
+    page_size: Optional[int] = None
+    page_number: Optional[int] = None
 
     class Config:
         from_attributes = True

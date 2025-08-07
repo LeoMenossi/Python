@@ -62,7 +62,18 @@ async def consult_query(table: str, where_schema: WhereSchema, valid_token = Dep
     """
     if valid_token:
         query = Query.get_query(table.upper(), where_schema.where, where_schema.group, where_schema.order)
-        resultado = Query.executa_query(query)
-        return {"result": resultado}
+        if not where_schema.page_size:
+            resultado = Query.executa_query(query)
+            return {"result": resultado}
+        elif where_schema.page_number and where_schema.order:
+            resultado = Query.exec_query(query, where_schema.page_size, where_schema.page_number)
+            total = len(Query.executa_query(query))
+            return {"result": resultado,
+                    "total": total,
+                    "page": where_schema.page_number,
+                    "size": where_schema.page_size,
+                    "pages": round(total / where_schema.page_size)} 
+        else:
+            raise HTTPException(status_code=404, detail="Para usar o recurso de paginação, acrescentar o 'order'")
     else:
         raise HTTPException(status_code=400, detail="Acesso Inválido")
